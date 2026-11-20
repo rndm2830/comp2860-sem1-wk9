@@ -38,6 +38,14 @@ class SAES_CBC:
         '''
         ciphertext = b''
         #TODO: Your code should go here
+        prev = self.iv
+        for i in range(0, len(plaintext), self.blocksize):
+            block_i = plaintext[i:i+self.blocksize]
+            xor_result = strxor(block_i, prev)
+            block_e = self.block_cipher.encrypt(xor_result)
+            ciphertext += block_e
+            prev = block_e
+
         return ciphertext
 
     def decrypt(self, ciphertext: bytes) -> bytes:
@@ -51,6 +59,13 @@ class SAES_CBC:
         '''
         plaintext = b''
         #TODO: Your code should go here
+        prev = self.iv
+        for i in range(0, len(ciphertext), self.blocksize):
+            block_i = ciphertext[i:i+self.blocksize]
+            block_d = self.block_cipher.decrypt(block_i)
+            xor_d = strxor(block_d, prev)
+            plaintext += xor_d
+            prev = block_i
         return plaintext
 
 if __name__ == '__main__':
